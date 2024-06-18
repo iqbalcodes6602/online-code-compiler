@@ -24,12 +24,15 @@ app.post("/run", async (req, res) => {
 
   try {
     // Run the code and get the output
-    const output = await executePy(code, input);
+    const { stdout, stderr } = await executePy(code, input);
 
     // Send the response back
-    return res.json({ output });
+    return res.json({ stdout, stderr });
   } catch (err) {
-    return res.status(500).json({ err });
+    console.log(err)
+    if (err.stderr)
+      return res.status(500).json({ success: false, error: err.stderr });
+    return res.status(500).json({ success: false, error: err.error.code });
   }
 });
 

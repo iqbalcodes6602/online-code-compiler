@@ -9,6 +9,11 @@ if (!fs.existsSync(dirCodes)) {
   fs.mkdirSync(dirCodes, { recursive: true });
 }
 
+const sanitizeError = (stderr) => {
+  // Remove file path information from the error message
+  return stderr.replace(/File ".*?\.py", line/g, 'Line');
+};
+
 const executePy = (code, input) => {
   return new Promise((resolve, reject) => {
     const jobId = uuid();
@@ -21,16 +26,36 @@ const executePy = (code, input) => {
     fs.writeFileSync(inputFilePath, input);
 
     // Execute the Python file with the input
-    exec(`python ${filepath} < ${inputFilePath}`, (error, stdout, stderr) => {
+    const childProcess = exec(`python ${filepath} < ${inputFilePath}`, { timeout: 5000 }, (error, stdout, stderr) => {
       // Clean up code and input files
-      fs.unlinkSync(filepath);
-      fs.unlinkSync(inputFilePath);
+      fs.unlink(filepath, (err) => {
+        if (err) console.error(`Error deleting file: ${filepath}`, err);
+      });
+      fs.unlink(inputFilePath, (err) => {
+        if (err) console.error(`Error deleting file: ${inputFilePath}`, err);
+      });
 
       if (error) {
-        reject({ error, stderr });
+        if (error.killed) {
+          return reject({ error: 'Execution terminated due to timeout', stderr: '' });
+        }
+        return reject({ error, stderr: sanitizeError(stderr) });
+      } else if (stderr) {
+        return resolve({ stdout, stderr: sanitizeError(stderr) });
       } else {
-        resolve(stdout);
+        return resolve({ stdout });
       }
+    });
+
+    // Handle timeout
+    childProcess.on('error', (error) => {
+      fs.unlink(filepath, (err) => {
+        if (err) console.error(`Error deleting file: ${filepath}`, err);
+      });
+      fs.unlink(inputFilePath, (err) => {
+        if (err) console.error(`Error deleting file: ${inputFilePath}`, err);
+      });
+      reject({ error: 'Execution error', stderr: error.message });
     });
   });
 };
