@@ -1,9 +1,9 @@
 const express = require("express");
 const cors = require("cors");
 
-const { generateFile } = require("./generateFile");
+const { generateFile } = require("./manageFile");
 const { executePy } = require("./executePy");
-const { deleteFile } = require("./generateFile");
+const { deleteFile } = require("./manageFile");
 
 const app = express();
 
