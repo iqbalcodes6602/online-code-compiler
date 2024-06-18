@@ -28,16 +28,18 @@ const executePy = (code, input) => {
     // Execute the Python file with the input
     const childProcess = exec(`python ${filepath} < ${inputFilePath}`, { timeout: 5000 }, (error, stdout, stderr) => {
       // Clean up code and input files
-      fs.unlink(filepath, (err) => {
-        if (err) console.error(`Error deleting file: ${filepath}`, err);
-      });
-      fs.unlink(inputFilePath, (err) => {
-        if (err) console.error(`Error deleting file: ${inputFilePath}`, err);
-      });
+      setTimeout(() => {
+        fs.unlink(filepath, (err) => {
+          if (err) console.error(`Error deleting file: ${filepath}`, err);
+        });
+        fs.unlink(inputFilePath, (err) => {
+          if (err) console.error(`Error deleting file: ${inputFilePath}`, err);
+        });
+      }, 1000); // Delay for 1 second to ensure files are released by the OS
 
       if (error) {
         if (error.killed) {
-          return reject({ error: 'Execution terminated due to timeout', stderr: '' });
+          return reject({ error: 'Execution terminated due to timeout', stderr: 'Time limit exceeded' });
         }
         return reject({ error, stderr: sanitizeError(stderr) });
       } else if (stderr) {
@@ -49,12 +51,15 @@ const executePy = (code, input) => {
 
     // Handle timeout
     childProcess.on('error', (error) => {
-      fs.unlink(filepath, (err) => {
-        if (err) console.error(`Error deleting file: ${filepath}`, err);
-      });
-      fs.unlink(inputFilePath, (err) => {
-        if (err) console.error(`Error deleting file: ${inputFilePath}`, err);
-      });
+      setTimeout(() => {
+        fs.unlink(filepath, (err) => {
+          if (err) console.error(`Error deleting file: ${filepath}`, err);
+        });
+        fs.unlink(inputFilePath, (err) => {
+          if (err) console.error(`Error deleting file: ${inputFilePath}`, err);
+        });
+      }, 1000); // Delay for 1 second to ensure files are released by the OS
+
       reject({ error: 'Execution error', stderr: error.message });
     });
   });

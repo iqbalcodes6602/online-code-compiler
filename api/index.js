@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const { executePy } = require("./executePy");
+const { executeJS } = require("./executeJS");
 
 const app = express();
 
@@ -18,13 +19,30 @@ app.post("/run", async (req, res) => {
   if (code === undefined) {
     return res.status(400).json({ success: false, error: "Empty code body!" });
   }
-  if (language !== "py") {
-    return res.status(400).json({ success: false, error: "Only Python is supported!" });
-  }
 
   try {
     // Run the code and get the output
-    const { stdout, stderr } = await executePy(code, input);
+    // const { stdout, stderr } = await executePy(code, input);
+
+    switch (language) {
+      // case 'c':
+      //   ({ stdout, stderr } = await executeC(code, input));
+      //   break;
+      // case 'cpp':
+      //   ({ stdout, stderr } = await executeCpp(code, input));
+      //   break;
+      case 'py':
+        ({ stdout, stderr } = await executePy(code, input));
+        break;
+      case 'js':
+        ({ stdout, stderr } = await executeJS(code, input));
+        break;
+      // case 'java':
+      //   ({ stdout, stderr } = await executeJava(code, input));
+      //   break;
+      default:
+        return res.status(400).json({ success: false, error: "Language not supported!" });
+    }
 
     // Send the response back
     return res.json({ stdout, stderr });

@@ -15,11 +15,12 @@ function App() {
     };
     try {
       const { data } = await axios.post("http://localhost:5000/run", payload);
-      setOutput(data.stdout || data.stderr);
+      setOutput(data?.stdout || data?.stderr);
     } catch (err) {
-      if (err.response.data.error === 'ERR_CHILD_PROCESS_STDIO_MAXBUFFER')
+      console.log(err);
+      if (err?.response?.data?.error === 'ERR_CHILD_PROCESS_STDIO_MAXBUFFER')
         setOutput('Time Limit Reached!')
-      else setOutput(err.response.data.error)
+      else setOutput(err?.response?.data?.error)
     }
   };
 
