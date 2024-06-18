@@ -1,9 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-
-const { generateFile } = require("./manageFile");
 const { executePy } = require("./executePy");
-const { deleteFile } = require("./manageFile");
 
 const app = express();
 
@@ -16,22 +13,23 @@ app.get("/", (req, res) => {
 });
 
 app.post("/run", async (req, res) => {
-  const { language = "py", code } = req.body;
+  const { language = "py", code, input = "" } = req.body;
 
   if (code === undefined) {
     return res.status(400).json({ success: false, error: "Empty code body!" });
   }
-  try {
-    // need to generate a c++ file with content from the request
-    const filepath = await generateFile(language, code);
-    // we need to run the file and send the response
-    const output = await executePy(filepath);
-    // delete the file after execution
-    await deleteFile(filepath);
+  if (language !== "py") {
+    return res.status(400).json({ success: false, error: "Only Python is supported!" });
+  }
 
-    return res.json({ filepath, output });
+  try {
+    // Run the code and get the output
+    const output = await executePy(code, input);
+
+    // Send the response back
+    return res.json({ output });
   } catch (err) {
-    res.status(500).json({ err });
+    return res.status(500).json({ err });
   }
 });
 

@@ -4,12 +4,14 @@ import React, { useState } from "react";
 
 function App() {
   const [code, setCode] = useState("");
+  const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
 
   const handleSubmit = async () => {
     const payload = {
       language: "py",
       code,
+      input,
     };
     try {
       const { data } = await axios.post("http://localhost:5000/run", payload);
@@ -29,6 +31,16 @@ function App() {
         onChange={(e) => {
           setCode(e.target.value);
         }}
+      ></textarea>
+      <br />
+      <textarea
+        rows="5"
+        cols="75"
+        value={input}
+        onChange={(e) => {
+          setInput(e.target.value);
+        }}
+        placeholder="Enter input here..."
       ></textarea>
       <br />
       <button onClick={handleSubmit}>Submit</button>
