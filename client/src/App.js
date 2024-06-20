@@ -43,13 +43,13 @@ function App() {
   return (
     <div className="App">
       <header>
-        <h2>Python Code Executor</h2>
+        Online Code Compiler
         <button onClick={handleSubmit}>Run Code</button>
       </header>
       <main>
         <div className="left-column">
           <textarea
-            placeholder="Enter your Python code here"
+            placeholder="Enter your code here..."
             value={code}
             onChange={(e) => setCode(e.target.value)}
           />
@@ -59,7 +59,7 @@ function App() {
             <label htmlFor="input-textarea">Input</label>
             <textarea
               id="input-textarea"
-              placeholder="Enter input (optional)"
+              placeholder=""
               value={input}
               onChange={(e) => setInput(e.target.value)}
             />
