@@ -1,53 +1,80 @@
-import axios from "axios";
-import "./App.css";
-import React, { useState } from "react";
+// frontend/src/App.js
+
+import React, { useState } from 'react';
+import './App.css';
 
 function App() {
-  const [code, setCode] = useState("");
-  const [input, setInput] = useState("");
-  const [output, setOutput] = useState("");
+  const [code, setCode] = useState('');
+  const [input, setInput] = useState('');
+  const [output, setOutput] = useState('');
+  const [executionTime, setExecutionTime] = useState(0);
+  const [error, setError] = useState('');
+  const [language, setLanguage] = useState('js');
 
   const handleSubmit = async () => {
-    const payload = {
-      language: "py",
-      code,
-      input,
-    };
     try {
-      const { data } = await axios.post("http://localhost:5000/run", payload);
-      setOutput(data?.stdout || data?.stderr);
-    } catch (err) {
-      console.log(err);
-      if (err?.response?.data?.error === 'ERR_CHILD_PROCESS_STDIO_MAXBUFFER')
-        setOutput('Time Limit Reached!')
-      else setOutput(err?.response?.data?.error)
+      const response = await fetch('http://localhost:5000/runcode/' + language, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ code, input }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const result = await response.json();
+      if (result.status) {
+        setOutput(result.data);
+        setExecutionTime(result.executionTime);
+        setError('');
+      } else {
+        setOutput('');
+        setExecutionTime(0);
+        setError(result.data);
+      }
+    } catch (error) {
+      setError(error.message);
     }
   };
 
   return (
     <div className="App">
-      <h1>Online Code Compiler</h1>
-      <textarea
-        rows="20"
-        cols="75"
-        value={code}
-        onChange={(e) => {
-          setCode(e.target.value);
-        }}
-      ></textarea>
-      <br />
-      <textarea
-        rows="5"
-        cols="75"
-        value={input}
-        onChange={(e) => {
-          setInput(e.target.value);
-        }}
-        placeholder="Enter input here..."
-      ></textarea>
-      <br />
-      <button onClick={handleSubmit}>Submit</button>
-      <p>{output}</p>
+      <header>
+        <h1>Python Code Executor</h1>
+      </header>
+      <main>
+        <textarea
+        cols={30}
+        rows={20}
+          placeholder="Enter your Python code here"
+          value={code}
+          onChange={(e) => setCode(e.target.value)}
+        />
+        <textarea
+        cols={30}
+        rows={20}
+          placeholder="Enter input (optional)"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+        />
+        <button onClick={handleSubmit}>Run Code</button>
+        {output && (
+          <div>
+            <h2>Output:</h2>
+            <pre>{output}</pre>
+            <p>Execution Time: {executionTime} ms</p>
+          </div>
+        )}
+        {error && (
+          <div>
+            <h2>Error:</h2>
+            <pre>{error}</pre>
+          </div>
+        )}
+      </main>
     </div>
   );
 }
