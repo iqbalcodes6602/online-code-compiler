@@ -41,45 +41,94 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <header>
+    // <div className="App">
+    //   <header>
+    //     Online Code Compiler
+    //     <button onClick={handleSubmit}>Run Code</button>
+    //   </header>
+    //   <main>
+    //     <div className="left-column">
+    //       <textarea
+    //         placeholder="Enter your code here..."
+    //         value={code}
+    //         onChange={(e) => setCode(e.target.value)}
+    //       />
+    //     </div>
+    //     <div className="right-column">
+    //       <div className="input-section">
+    //         <label htmlFor="input-textarea">Input</label>
+    //         <textarea
+    //           id="input-textarea"
+    //           placeholder=""
+    //           value={input}
+    //           onChange={(e) => setInput(e.target.value)}
+    //         />
+    //       </div>
+
+    //       <div className="output-section">
+    //         <label htmlFor="output-div">
+    //           Output
+    //           <span className="execution-time">
+    //             {executionTime}
+    //           </span>
+    //         </label>
+    //         <div id="output-div" className="output-content">
+
+    //           {output ? output : error}
+    //         </div>
+    //       </div>
+    //     </div>
+    //   </main>
+    // </div>
+    <div className="grid grid-rows-auto h-screen bg-gray-900">
+      {/* Header */}
+      <header className=" text-white flex items-center justify-center row-span-1">
         Online Code Compiler
-        <button onClick={handleSubmit}>Run Code</button>
+        <button className="ml-4 px-4 py-2 bg-blue-500 text-white font-bold rounded cursor-pointer" onClick={handleSubmit}>
+          Run Code
+        </button>
       </header>
-      <main>
-        <div className="left-column">
+
+      {/* Main Content */}
+      <main className="grid grid-cols-2 gap-4 p-4 text-gray-300 row-span-9">
+        {/* Left Column */}
+        <div className="flex flex-col gap-4">
           <textarea
+            className="flex-1 resize-none bg-gray-800 text-gray-300  p-4 rounded"
             placeholder="Enter your code here..."
             value={code}
             onChange={(e) => setCode(e.target.value)}
           />
         </div>
-        <div className="right-column">
-          <div className="input-section">
-            <label htmlFor="input-textarea">Input</label>
+
+        {/* Right Column */}
+        <div className="grid grid-rows-2 gap-4">
+          {/* Input Section */}
+          <div className="flex flex-col gap-2 bg-gray-800 p-4 rounded">
+            <label htmlFor="input-textarea" className="font-bold text-gray-300">Input</label>
             <textarea
               id="input-textarea"
+              className="resize-none bg-gray-900 text-gray-300 p-4 rounded"
               placeholder=""
               value={input}
               onChange={(e) => setInput(e.target.value)}
             />
           </div>
 
-          <div className="output-section">
-            <label htmlFor="output-div">
+          {/* Output Section */}
+          <div className="flex flex-col gap-2 bg-gray-800 p-4 rounded">
+            <label htmlFor="output-div" className="flex justify-between font-bold text-gray-300">
               Output
-              <span className="execution-time">
-                {executionTime}
-              </span>
+              <span className="text-blue-500">{executionTime}</span>
             </label>
-            <div id="output-div" className="output-content">
-            
+            <div id="output-div" className="bg-gray-900 text-gray-300 rounded p-4 overflow-auto h-[100%]">
               {output ? output : error}
             </div>
           </div>
         </div>
       </main>
     </div>
+
   );
 }
 
