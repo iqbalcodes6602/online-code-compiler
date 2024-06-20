@@ -9,7 +9,7 @@ function App() {
   const [output, setOutput] = useState('');
   const [executionTime, setExecutionTime] = useState(0);
   const [error, setError] = useState('');
-  const [language, setLanguage] = useState('js');
+  const [language, setLanguage] = useState('py');
 
   const handleSubmit = async () => {
     try {
@@ -28,11 +28,11 @@ function App() {
       const result = await response.json();
       if (result.status) {
         setOutput(result.data);
-        setExecutionTime(result.executionTime);
+        setExecutionTime(result.executionTime + ' ms');
         setError('');
       } else {
         setOutput('');
-        setExecutionTime(0);
+        setExecutionTime('Error Occured');
         setError(result.data);
       }
     } catch (error) {
@@ -43,37 +43,41 @@ function App() {
   return (
     <div className="App">
       <header>
-        <h1>Python Code Executor</h1>
+        <h2>Python Code Executor</h2>
+        <button onClick={handleSubmit}>Run Code</button>
       </header>
       <main>
-        <textarea
-        cols={30}
-        rows={20}
-          placeholder="Enter your Python code here"
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-        />
-        <textarea
-        cols={30}
-        rows={20}
-          placeholder="Enter input (optional)"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-        />
-        <button onClick={handleSubmit}>Run Code</button>
-        {output && (
-          <div>
-            <h2>Output:</h2>
-            <pre>{output}</pre>
-            <p>Execution Time: {executionTime} ms</p>
+        <div className="left-column">
+          <textarea
+            placeholder="Enter your Python code here"
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+          />
+        </div>
+        <div className="right-column">
+          <div className="input-section">
+            <label htmlFor="input-textarea">Input</label>
+            <textarea
+              id="input-textarea"
+              placeholder="Enter input (optional)"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+            />
           </div>
-        )}
-        {error && (
-          <div>
-            <h2>Error:</h2>
-            <pre>{error}</pre>
+
+          <div className="output-section">
+            <label htmlFor="output-div">
+              Output
+              <span className="execution-time">
+                {executionTime}
+              </span>
+            </label>
+            <div id="output-div" className="output-content">
+            
+              {output ? output : error}
+            </div>
           </div>
-        )}
+        </div>
       </main>
     </div>
   );
