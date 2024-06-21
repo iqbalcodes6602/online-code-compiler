@@ -1,15 +1,30 @@
 // frontend/src/App.js
-
 import React, { useState } from 'react';
 import './App.css';
+import CodeEditor from './CodeEditor';
+
+export const LANGUAGE_VERSIONS = {
+  javascript: "18.15.0",
+  python: "3.10.0",
+  java: "15.0.2",
+  csharp: "6.12.0",
+};
+
+export const CODE_SNIPPETS = {
+  javascript: `function greet(name) {\n\tconsole.log("Hello, " + name + "!");\n}\n\ngreet("world");\n`,
+  python: `def greet(name):\n\tprint("Hello, " + name + "!")\n\ngreet("world")\n`,
+  java: `public class HelloWorld {\n\tpublic static void main(String[] args) {\n\t\tSystem.out.println("Hello World");\n\t}\n}\n`,
+  csharp:
+    'using System;\n\nnamespace HelloWorld\n{\n\tclass Hello { \n\t\tstatic void Main(string[] args) {\n\t\t\tConsole.WriteLine("Hello World in C#");\n\t\t}\n\t}\n}\n',
+};
 
 function App() {
-  const [code, setCode] = useState('');
+  const [code, setCode] = useState(CODE_SNIPPETS.python);
   const [input, setInput] = useState('');
   const [output, setOutput] = useState('');
   const [executionTime, setExecutionTime] = useState();
   const [error, setError] = useState('');
-  const [language, setLanguage] = useState('py');
+  const [language, setLanguage] = useState('python');
 
   const handleSubmit = async () => {
     try {
@@ -32,7 +47,7 @@ function App() {
         setError('');
       } else {
         setOutput('');
-        setExecutionTime('Error Occured');
+        setExecutionTime('Error Occurred');
         setError(result.data);
       }
     } catch (error) {
@@ -40,10 +55,27 @@ function App() {
     }
   };
 
+  const handleLanguageChange = (e) => {
+    const selectedLanguage = e.target.value;
+    setLanguage(selectedLanguage);
+    setCode(CODE_SNIPPETS[selectedLanguage]);
+  };
+
   return (
     <div className="grid grid-rows-auto h-screen bg-gray-900">
       {/* Header */}
-      <header className=" text-white flex items-center justify-center row-span-1">
+      <header className="text-white flex items-center justify-center row-span-1">
+        <select
+          className="ml-4 px-4 py-2 bg-gray-700 text-white rounded"
+          value={language}
+          onChange={handleLanguageChange}
+        >
+          {Object.keys(LANGUAGE_VERSIONS).map((lang) => (
+            <option key={lang} value={lang}>
+              {lang}
+            </option>
+          ))}
+        </select>
         Online Code Compiler
         <button className="ml-4 px-4 py-2 bg-blue-500 text-white font-bold rounded cursor-pointer" onClick={handleSubmit}>
           Run Code
@@ -54,18 +86,13 @@ function App() {
       <main className="grid md:grid-cols-5 gap-4 p-4 text-gray-300 row-span-9">
         {/* Left Column */}
         <div className="flex flex-col gap-4 md:col-span-3">
-          <textarea
-            className="flex-1 resize-none bg-gray-800 text-gray-300  p-4 rounded outline-none"
-            placeholder="Enter your code here..."
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-          />
+          <CodeEditor language={language} code={code} setCode={setCode} />
         </div>
 
         {/* Right Column */}
         <div className="grid grid-rows-3 gap-4 md:col-span-2">
           {/* Input Section */}
-          <div className="flex flex-col gap-2 bg-gray-800 p-4 rounded row-span-1">
+          <div className="flex flex-col gap-2 bg-gray-800 p-4 row-span-1">
             <label htmlFor="input-textarea" className="font-bold text-gray-300">Input</label>
             <textarea
               id="input-textarea"
@@ -77,19 +104,20 @@ function App() {
           </div>
 
           {/* Output Section */}
-          <div className="flex flex-col gap-2 bg-gray-800 p-4 rounded row-span-2">
-            <label htmlFor="output-div" className="flex justify-between font-bold text-gray-300">
-              Output
-              <span className="text-blue-500">{executionTime}</span>
+          <div className="flex flex-col gap-2 bg-gray-800 p-4 row-span-2">
+            <label htmlFor="output-div" className="flex font-bold text-gray-300 gap-1">
+              Output {executionTime &&
+                <span className="text-blue-400">({executionTime})</span>
+              }
             </label>
-            <div id="output-div" className="bg-gray-900 text-gray-300 rounded p-4 overflow-auto h-[100%]">
+            <div id="output-div" className="bg-gray-900 text-gray-300 rounded p-4 overflow-auto h-[100%]" style={{ whiteSpace: 'pre-wrap' }}>
               {output ? output : error}
             </div>
+
           </div>
         </div>
       </main>
     </div>
-
   );
 }
 

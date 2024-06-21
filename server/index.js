@@ -43,7 +43,7 @@ async function clearCodeDirectory() {
 }
 
 // Route to run Python code
-app.post('/runcode/py', async (req, res) => {
+app.post('/runcode/python', async (req, res) => {
   try {
     const { code, input } = req.body;
     const result = await runPython(code, input);
@@ -57,7 +57,7 @@ app.post('/runcode/py', async (req, res) => {
 });
 
 // Route to run JavaScript code (if needed)
-app.post('/runcode/js', async (req, res) => {
+app.post('/runcode/javascript', async (req, res) => {
   try {
     const { code, input } = req.body;
     // Adjust this line to run JavaScript code if implemented
