@@ -7,7 +7,7 @@ function App() {
   const [code, setCode] = useState('');
   const [input, setInput] = useState('');
   const [output, setOutput] = useState('');
-  const [executionTime, setExecutionTime] = useState(0);
+  const [executionTime, setExecutionTime] = useState();
   const [error, setError] = useState('');
   const [language, setLanguage] = useState('py');
 
@@ -94,7 +94,7 @@ function App() {
         {/* Left Column */}
         <div className="flex flex-col gap-4">
           <textarea
-            className="flex-1 resize-none bg-gray-800 text-gray-300  p-4 rounded"
+            className="flex-1 resize-none bg-gray-800 text-gray-300  p-4 rounded outline-none"
             placeholder="Enter your code here..."
             value={code}
             onChange={(e) => setCode(e.target.value)}
@@ -102,13 +102,13 @@ function App() {
         </div>
 
         {/* Right Column */}
-        <div className="grid grid-rows-2 gap-4">
+        <div className="grid grid-rows-3 gap-4">
           {/* Input Section */}
-          <div className="flex flex-col gap-2 bg-gray-800 p-4 rounded">
+          <div className="flex flex-col gap-2 bg-gray-800 p-4 rounded row-span-1">
             <label htmlFor="input-textarea" className="font-bold text-gray-300">Input</label>
             <textarea
               id="input-textarea"
-              className="resize-none bg-gray-900 text-gray-300 p-4 rounded"
+              className="resize-none bg-gray-900 text-gray-300 p-4 rounded outline-none h-[100%]"
               placeholder=""
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -116,7 +116,7 @@ function App() {
           </div>
 
           {/* Output Section */}
-          <div className="flex flex-col gap-2 bg-gray-800 p-4 rounded">
+          <div className="flex flex-col gap-2 bg-gray-800 p-4 rounded row-span-2">
             <label htmlFor="output-div" className="flex justify-between font-bold text-gray-300">
               Output
               <span className="text-blue-500">{executionTime}</span>
