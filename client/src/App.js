@@ -41,45 +41,6 @@ function App() {
   };
 
   return (
-    // <div className="App">
-    //   <header>
-    //     Online Code Compiler
-    //     <button onClick={handleSubmit}>Run Code</button>
-    //   </header>
-    //   <main>
-    //     <div className="left-column">
-    //       <textarea
-    //         placeholder="Enter your code here..."
-    //         value={code}
-    //         onChange={(e) => setCode(e.target.value)}
-    //       />
-    //     </div>
-    //     <div className="right-column">
-    //       <div className="input-section">
-    //         <label htmlFor="input-textarea">Input</label>
-    //         <textarea
-    //           id="input-textarea"
-    //           placeholder=""
-    //           value={input}
-    //           onChange={(e) => setInput(e.target.value)}
-    //         />
-    //       </div>
-
-    //       <div className="output-section">
-    //         <label htmlFor="output-div">
-    //           Output
-    //           <span className="execution-time">
-    //             {executionTime}
-    //           </span>
-    //         </label>
-    //         <div id="output-div" className="output-content">
-
-    //           {output ? output : error}
-    //         </div>
-    //       </div>
-    //     </div>
-    //   </main>
-    // </div>
     <div className="grid grid-rows-auto h-screen bg-gray-900">
       {/* Header */}
       <header className=" text-white flex items-center justify-center row-span-1">
@@ -90,9 +51,9 @@ function App() {
       </header>
 
       {/* Main Content */}
-      <main className="grid grid-cols-2 gap-4 p-4 text-gray-300 row-span-9">
+      <main className="grid md:grid-cols-5 gap-4 p-4 text-gray-300 row-span-9">
         {/* Left Column */}
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 md:col-span-3">
           <textarea
             className="flex-1 resize-none bg-gray-800 text-gray-300  p-4 rounded outline-none"
             placeholder="Enter your code here..."
@@ -102,7 +63,7 @@ function App() {
         </div>
 
         {/* Right Column */}
-        <div className="grid grid-rows-3 gap-4">
+        <div className="grid grid-rows-3 gap-4 md:col-span-2">
           {/* Input Section */}
           <div className="flex flex-col gap-2 bg-gray-800 p-4 rounded row-span-1">
             <label htmlFor="input-textarea" className="font-bold text-gray-300">Input</label>
