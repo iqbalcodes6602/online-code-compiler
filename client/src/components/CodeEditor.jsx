@@ -1,5 +1,5 @@
 import Editor from '@monaco-editor/react';
-import { myTheme } from './myTheme';
+import { myTheme } from '../styles/myTheme';
 
 const CodeEditor = ({ language, code, setCode }) => {
     return (

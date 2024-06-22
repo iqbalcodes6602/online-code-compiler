@@ -1,27 +1,16 @@
 // frontend/src/App.js
 import React, { useState } from 'react';
-import './App.css';
-import CodeEditor from './CodeEditor';
+import './styles/App.css';
+import CodeEditor from './components/CodeEditor';
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "./components/ui/resizable"
+import Header from './components/Header';
+import RightCol from './components/RightCol';
+import { CODE_SNIPPETS } from './utils/constants';
 
-export const LANGUAGE_VERSIONS = {
-  javascript: "18.15.0",
-  python: "3.10.0",
-  java: "15.0.2",
-  csharp: "6.12.0",
-};
-
-export const CODE_SNIPPETS = {
-  javascript: `function greet(name) {\n\tconsole.log("Hello, " + name + "!");\n}\n\ngreet("world");\n`,
-  python: `def greet(name):\n\tprint("Hello, " + name + "!")\n\ngreet("world")\n`,
-  java: `public class HelloWorld {\n\tpublic static void main(String[] args) {\n\t\tSystem.out.println("Hello World");\n\t}\n}\n`,
-  csharp:
-    'using System;\n\nnamespace HelloWorld\n{\n\tclass Hello { \n\t\tstatic void Main(string[] args) {\n\t\t\tConsole.WriteLine("Hello World in C#");\n\t\t}\n\t}\n}\n',
-};
 
 function App() {
   const [code, setCode] = useState(CODE_SNIPPETS.python);
@@ -69,70 +58,26 @@ function App() {
   return (
     <div className="h-screen bg-gray-900 flex flex-col">
       {/* Header */}
-      <header className="text-white flex items-center justify-center p-2">
-        <select
-          className="ml-4 px-4 py-2 bg-gray-700 text-white rounded"
-          value={language}
-          onChange={handleLanguageChange}
-        >
-          {Object.keys(LANGUAGE_VERSIONS).map((lang) => (
-            <option key={lang} value={lang}>
-              {lang}
-            </option>
-          ))}
-        </select>
-        Online Code Compiler
-        <button className="ml-4 px-4 py-2 bg-blue-500 text-white font-bold rounded cursor-pointer" onClick={handleSubmit}>
-          Run Code
-        </button>
-      </header>
+      <Header language={language} handleLanguageChange={handleLanguageChange} handleSubmit={handleSubmit} />
 
       {/* Main Content */}
       <main className="flex-1 p-4 text-gray-300 overflow-auto">
         <ResizablePanelGroup direction="horizontal" className="h-full">
+
           {/* Left Column */}
           <ResizablePanel defaultSize={60} minSize={30}>
             <div className="flex flex-col gap-4 h-full">
               <CodeEditor language={language} code={code} setCode={setCode} />
             </div>
           </ResizablePanel>
+
           <ResizableHandle className='bg-gray-900 text-gray-900' withHandle />
+
           {/* Right Column */}
           <ResizablePanel defaultSize={40} minSize={20}>
-            <ResizablePanelGroup direction="vertical" className="h-full gap-[0.1px]">
-              {/* Input Section */}
-              <ResizablePanel defaultSize={30} minSize={20}>
-                <div className="flex flex-col gap-2 bg-gray-800 p-2 h-full">
-                  <label htmlFor="input-textarea" className="font-bold text-gray-300">Input</label>
-                  <textarea
-                    id="input-textarea"
-                    className="resize-none bg-gray-900 text-gray-300 p-4 rounded outline-none h-full"
-                    placeholder=""
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                  />
-                </div>
-              </ResizablePanel>
-              <ResizableHandle className='bg-gray-900 text-gray-900' withHandle />
-              {/* Output Section */}
-              <ResizablePanel defaultSize={70} minSize={20}>
-                <div className="flex flex-col gap-2 bg-gray-800 p-2 h-full">
-                  <label htmlFor="output-textarea" className="font-bold text-gray-300 gap-1">
-                    Output {executionTime && (
-                      <span className="text-blue-400">({executionTime})</span>
-                    )}
-                  </label>
-                  <textarea
-                    id="output-textarea"
-                    className="resize-none bg-gray-900 text-gray-300 p-4 rounded outline-none h-full overflow-auto"
-                    placeholder=""
-                    value={output || error}
-                    disabled={true}
-                  />
-                </div>
-              </ResizablePanel>
-            </ResizablePanelGroup>
+            <RightCol input={input} setInput={setInput} output={output} error={error} executionTime={executionTime} />
           </ResizablePanel>
+
         </ResizablePanelGroup>
       </main>
     </div>
