@@ -49,11 +49,6 @@ function App() {
     }
   };
 
-  // const handleLanguageChange = (e) => {
-  //   const selectedLanguage = e.target.value;
-  //   setLanguage(selectedLanguage);
-  //   setCode(CODE_SNIPPETS[selectedLanguage]);
-  // };
 
   const handleLanguageChange = (selectedLanguage) => {
     setLanguage(selectedLanguage);
