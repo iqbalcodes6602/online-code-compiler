@@ -1,4 +1,4 @@
-export const customTheme = {
+export const myTheme = {
     base: 'vs-dark',
     inherit: true,
     rules: [],

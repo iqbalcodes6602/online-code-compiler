@@ -62,9 +62,9 @@ function App() {
   };
 
   return (
-    <div className="grid grid-rows-auto h-screen bg-gray-900">
+    <div className="h-screen bg-gray-900 flex flex-col">
       {/* Header */}
-      <header className="text-white flex items-center justify-center row-span-1">
+      <header className="text-white flex items-center justify-center p-2">
         <select
           className="ml-4 px-4 py-2 bg-gray-700 text-white rounded"
           value={language}
@@ -83,7 +83,7 @@ function App() {
       </header>
 
       {/* Main Content */}
-      <main className="grid md:grid-cols-5 gap-4 p-4 text-gray-300 row-span-9">
+      <main className="flex-1 grid md:grid-cols-5 gap-4 p-4 text-gray-300 overflow-auto">
         {/* Left Column */}
         <div className="flex flex-col gap-4 md:col-span-3">
           <CodeEditor language={language} code={code} setCode={setCode} />
@@ -110,14 +110,18 @@ function App() {
                 <span className="text-blue-400">({executionTime})</span>
               }
             </label>
-            <div id="output-div" className="bg-gray-900 text-gray-300 rounded p-4 overflow-auto h-[100%]" style={{ whiteSpace: 'pre-wrap' }}>
-              {output ? output : error}
-            </div>
-
+            <textarea
+              className="resize-none bg-gray-900 text-gray-300 p-4 rounded outline-none h-[100%]"
+              placeholder=""
+              value={output || error}
+              disabled={true}
+            />
           </div>
         </div>
       </main>
     </div>
+
+
   );
 }
 

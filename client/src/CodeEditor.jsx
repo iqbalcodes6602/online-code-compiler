@@ -1,19 +1,17 @@
-import Editor from '@monaco-editor/react'
-import { customTheme } from './customTheme'
+import Editor from '@monaco-editor/react';
+import { myTheme } from './myTheme';
 
-
-const EditorComponent = ({ language, code, setCode }) => {
+const CodeEditor = ({ language, code, setCode }) => {
     return (
         <Editor
-            height='85vh'
-            // height={'100%'}
-            // width={'100%'}
+            height={"100%"}
+            width={"100%"}
             language={language}
             value={code}
             onChange={(value) => setCode(value)}
             beforeMount={(monaco) => {
-                monaco.editor.defineTheme('customTheme', customTheme)
-                monaco.editor.setTheme('customTheme')
+                monaco.editor.defineTheme('customTheme', myTheme);
+                monaco.editor.setTheme('customTheme');
             }}
             theme="customTheme"
             options={{
@@ -21,7 +19,7 @@ const EditorComponent = ({ language, code, setCode }) => {
                 fontSize: 16,
             }}
         />
-    )
-}
+    );
+};
 
-export default EditorComponent
+export default CodeEditor;
