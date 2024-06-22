@@ -49,11 +49,17 @@ function App() {
     }
   };
 
-  const handleLanguageChange = (e) => {
-    const selectedLanguage = e.target.value;
+  // const handleLanguageChange = (e) => {
+  //   const selectedLanguage = e.target.value;
+  //   setLanguage(selectedLanguage);
+  //   setCode(CODE_SNIPPETS[selectedLanguage]);
+  // };
+
+  const handleLanguageChange = (selectedLanguage) => {
     setLanguage(selectedLanguage);
     setCode(CODE_SNIPPETS[selectedLanguage]);
   };
+
 
   return (
     <div className="h-screen bg-gray-900 flex flex-col">
@@ -65,7 +71,7 @@ function App() {
         <ResizablePanelGroup direction="horizontal" className="h-full">
 
           {/* Left Column */}
-          <ResizablePanel defaultSize={60} minSize={30}>
+          <ResizablePanel defaultSize={70} minSize={30}>
             <div className="flex flex-col gap-4 h-full">
               <CodeEditor language={language} code={code} setCode={setCode} />
             </div>
@@ -74,7 +80,7 @@ function App() {
           <ResizableHandle className='bg-gray-900 text-gray-900' withHandle />
 
           {/* Right Column */}
-          <ResizablePanel defaultSize={40} minSize={20}>
+          <ResizablePanel defaultSize={30} minSize={20}>
             <RightCol input={input} setInput={setInput} output={output} error={error} executionTime={executionTime} />
           </ResizablePanel>
 
