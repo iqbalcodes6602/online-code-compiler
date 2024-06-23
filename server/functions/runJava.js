@@ -13,7 +13,7 @@ async function runJava(code, input) {
     try {
         // Generate unique filenames for code and input files
         const fileName = `${uuid()}`;
-        codePath = path.join(codesDirectory, fileName + '.py');
+        codePath = path.join(codesDirectory, fileName + '.java');
         inputPath = path.join(codesDirectory, fileName + '.input');
 
         // Write code and input to temporary files
