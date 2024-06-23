@@ -29,7 +29,7 @@ async function clearCodeDirectory() {
 }
 
 // Route to delete all files in the 'code' directory
-app.get('/clearcode', async (req, res) => {
+app.get('/clearcodes', async (req, res) => {
   try {
     await clearCodeDirectory();
     res.status(200).json({

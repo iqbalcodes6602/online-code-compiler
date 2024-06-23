@@ -19,9 +19,13 @@ function App() {
   const [executionTime, setExecutionTime] = useState();
   const [error, setError] = useState('');
   const [language, setLanguage] = useState('python');
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
+    setLoading(true);
     try {
+      setOutput('');
+      setError('');
       const response = await fetch(process.env.REACT_APP_BACKEND_URL + language, {
         method: 'POST',
         headers: {
@@ -47,8 +51,8 @@ function App() {
     } catch (error) {
       setError(error.message);
     }
+    setLoading(false);
   };
-
 
   const handleLanguageChange = (selectedLanguage) => {
     setLanguage(selectedLanguage);
@@ -76,7 +80,7 @@ function App() {
 
           {/* Right Column */}
           <ResizablePanel defaultSize={30} minSize={20}>
-            <RightCol input={input} setInput={setInput} output={output} error={error} executionTime={executionTime} />
+            <RightCol input={input} setInput={setInput} output={output} error={error} executionTime={executionTime} loading={loading} />
           </ResizablePanel>
 
         </ResizablePanelGroup>

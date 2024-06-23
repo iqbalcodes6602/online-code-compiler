@@ -1,8 +1,9 @@
 import React from 'react'
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from './ui/resizable'
+import { LoaderCircle } from 'lucide-react'
 
 
-function RightCol({ input, setInput, output, error, executionTime }) {
+function RightCol({ input, setInput, output, error, executionTime, loading }) {
     return (
         <>
             <ResizablePanelGroup direction="vertical" className="h-full">
@@ -26,10 +27,16 @@ function RightCol({ input, setInput, output, error, executionTime }) {
                 {/* Output Section */}
                 <ResizablePanel defaultSize={60} minSize={20}>
                     <div className="flex flex-col gap-2 bg-gray-800 p-2 h-full border-b border-r border-blue-800">
-                        <label htmlFor="output-textarea" className="font-bold text-gray-300 gap-1">
-                            Output {executionTime && (
-                                <span className="text-blue-400">({executionTime})</span>
-                            )}
+                        <label htmlFor="output-textarea" className="flex justify-between font-bold text-gray-300 gap-1">
+                            Output
+                            <span className="text-blue-500">
+                                {
+                                    loading ?
+                                        <span><LoaderCircle className="animate-spin" /></span>
+                                        :
+                                        executionTime
+                                }
+                            </span>
                         </label>
                         <textarea
                             id="output-textarea"
