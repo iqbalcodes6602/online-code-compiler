@@ -1,12 +1,12 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const runPython = require('./runPython');
 const cors = require('cors');
 const fs = require('fs').promises;
 const path = require('path');
-const runJs = require('./runJs');
-const runCpp = require('./runCpp');
-const runJava = require('./runJava');
+const runPython = require('./functions/runPython');
+const runJs = require('./functions/runJs');
+const runCpp = require('./functions/runCpp');
+const runJava = require('./functions/runJava');
 
 const app = express();
 const port = process.env.PORT || 5000;
