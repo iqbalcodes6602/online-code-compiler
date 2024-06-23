@@ -8,7 +8,7 @@ const fs = require('fs').promises;
 
 const path = require('path');
 const codesDirectory = path.join(__dirname, 'codes');
-async function runPython(code, input) {
+async function runJava(code, input) {
     let codePath, inputPath;
     try {
         // Generate unique filenames for code and input files
@@ -23,7 +23,7 @@ async function runPython(code, input) {
         // Execute the Python code with input file as input
         const startTime = new Date().getTime();
         const { error, stdout, stderr } = await execAsync(
-            `python3 ${codePath} < ${inputPath}`,
+            `java ${codePath} < ${inputPath}`,
             { timeout: 10000 }
         ).catch((error) => {
             if (error.killed && error.signal === 'SIGTERM') {
@@ -78,4 +78,4 @@ async function attemptFileDeletion(filePath) {
     }
 }
 
-module.exports = runPython;
+module.exports = runJava;

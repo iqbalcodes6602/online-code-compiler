@@ -1,4 +1,4 @@
-// executePy.js
+// executeCpp.js
 
 const { v4: uuid } = require('uuid');
 const { exec } = require('child_process');
@@ -8,22 +8,29 @@ const fs = require('fs').promises;
 
 const path = require('path');
 const codesDirectory = path.join(__dirname, 'codes');
-async function runPython(code, input) {
-    let codePath, inputPath;
+
+async function runCpp(code, input) {
+    let codePath, inputPath, executablePath;
     try {
         // Generate unique filenames for code and input files
         const fileName = `${uuid()}`;
-        codePath = path.join(codesDirectory, fileName + '.py');
+        codePath = path.join(codesDirectory, fileName + '.cpp');
         inputPath = path.join(codesDirectory, fileName + '.input');
+        executablePath = path.join(codesDirectory, fileName + '.exe'); // Add .exe extension for the executable
 
         // Write code and input to temporary files
         await fs.writeFile(codePath, code);
         await fs.writeFile(inputPath, input || '');
 
-        // Execute the Python code with input file as input
+        // Compile the C++ code
+        await execAsync(`g++ ${codePath} -o ${executablePath}`).catch((error) => {
+            throw new Error(`Compilation failed: ${error.stderr || error.message}`);
+        });
+
+        // Execute the compiled binary with input file as input
         const startTime = new Date().getTime();
         const { error, stdout, stderr } = await execAsync(
-            `python3 ${codePath} < ${inputPath}`,
+            `${executablePath} < ${inputPath}`,
             { timeout: 10000 }
         ).catch((error) => {
             if (error.killed && error.signal === 'SIGTERM') {
@@ -50,12 +57,15 @@ async function runPython(code, input) {
     } finally {
         // Ensure to always attempt cleanup, even if an error occurred
         try {
-            // Attempt to delete codePath and inputPath if they were created
+            // Attempt to delete codePath, inputPath, and executablePath if they were created
             if (codePath) {
                 await fs.unlink(codePath);
             }
             if (inputPath) {
                 await attemptFileDeletion(inputPath);
+            }
+            if (executablePath) {
+                await attemptFileDeletion(executablePath);
             }
         } catch (cleanupError) {
             console.error('Error cleaning up temporary files:', cleanupError);
@@ -78,4 +88,4 @@ async function attemptFileDeletion(filePath) {
     }
 }
 
-module.exports = runPython;
+module.exports = runCpp;

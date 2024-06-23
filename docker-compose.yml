@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  frontend:
+    build: ./client
+    container_name: react-ui
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    tty: true
+    depends_on:
+      - backend
+    networks:
+      - app-net
+
+  backend:
+    build: ./server
+    container_name: node-api
+    ports:
+      - "5000:5000"
+    networks:
+      - app-net
+  
+networks:
+  app-net:
+    driver: bridge

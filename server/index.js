@@ -5,6 +5,8 @@ const cors = require('cors');
 const fs = require('fs').promises;
 const path = require('path');
 const runJs = require('./runJs');
+const runCpp = require('./runCpp');
+const runJava = require('./runJava');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -12,6 +14,19 @@ const codeDir = path.join(__dirname, 'codes'); // Adjust the path as per your di
 
 app.use(bodyParser.json());
 app.use(cors());
+
+
+// Helper function to clear the 'code' directory
+async function clearCodeDirectory() {
+  try {
+    const files = await fs.readdir(codeDir);
+    for (const file of files) {
+      await fs.unlink(path.join(codeDir, file));
+    }
+  } catch (error) {
+    throw error;
+  }
+}
 
 // Route to delete all files in the 'code' directory
 app.get('/clearcode', async (req, res) => {
@@ -30,23 +45,53 @@ app.get('/clearcode', async (req, res) => {
   }
 });
 
-// Helper function to clear the 'code' directory
-async function clearCodeDirectory() {
-  try {
-    const files = await fs.readdir(codeDir);
-    for (const file of files) {
-      await fs.unlink(path.join(codeDir, file));
-    }
-  } catch (error) {
-    throw error;
-  }
-}
-
 // Route to run Python code
 app.post('/runcode/python', async (req, res) => {
   try {
     const { code, input } = req.body;
     const result = await runPython(code, input);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({
+      data: error.message,
+      status: false,
+    });
+  }
+});
+
+// Route to run Cpp code
+app.post('/runcode/cpp', async (req, res) => {
+  try {
+    const { code, input } = req.body;
+    const result = await runCpp(code, input);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({
+      data: error.message,
+      status: false,
+    });
+  }
+});
+
+// Route to run C code
+app.post('/runcode/c', async (req, res) => {
+  try {
+    const { code, input } = req.body;
+    const result = await runCpp(code, input);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({
+      data: error.message,
+      status: false,
+    });
+  }
+});
+
+// Route to run Java code
+app.post('/runcode/java', async (req, res) => {
+  try {
+    const { code, input } = req.body;
+    const result = await runJava(code, input);
     res.status(200).json(result);
   } catch (error) {
     res.status(500).json({

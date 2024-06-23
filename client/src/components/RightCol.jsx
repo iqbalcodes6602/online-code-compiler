@@ -5,11 +5,11 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from './ui/resiz
 function RightCol({ input, setInput, output, error, executionTime }) {
     return (
         <>
-            <ResizablePanelGroup direction="vertical" className="h-full gap-[0.1px]">
+            <ResizablePanelGroup direction="vertical" className="h-full">
 
                 {/* Input Section */}
                 <ResizablePanel defaultSize={40} minSize={20}>
-                    <div className="flex flex-col gap-2 bg-gray-800 p-2 h-full">
+                    <div className="flex flex-col gap-2 bg-gray-800 p-2 h-full border-t border-r border-blue-800">
                         <label htmlFor="input-textarea" className="font-bold text-gray-300">Input</label>
                         <textarea
                             id="input-textarea"
@@ -21,11 +21,11 @@ function RightCol({ input, setInput, output, error, executionTime }) {
                     </div>
                 </ResizablePanel>
 
-                <ResizableHandle className='bg-gray-900 text-gray-900' withHandle />
+                <ResizableHandle className='bg-blue-800 text-gray-900' withHandle />
 
                 {/* Output Section */}
                 <ResizablePanel defaultSize={60} minSize={20}>
-                    <div className="flex flex-col gap-2 bg-gray-800 p-2 h-full">
+                    <div className="flex flex-col gap-2 bg-gray-800 p-2 h-full border-b border-r border-blue-800">
                         <label htmlFor="output-textarea" className="font-bold text-gray-300 gap-1">
                             Output {executionTime && (
                                 <span className="text-blue-400">({executionTime})</span>

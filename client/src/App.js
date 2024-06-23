@@ -22,7 +22,7 @@ function App() {
 
   const handleSubmit = async () => {
     try {
-      const response = await fetch('http://localhost:5000/runcode/' + language, {
+      const response = await fetch(process.env.REACT_APP_BACKEND_URL + language, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -67,12 +67,12 @@ function App() {
 
           {/* Left Column */}
           <ResizablePanel defaultSize={70} minSize={30}>
-            <div className="flex flex-col gap-4 h-full">
+            <div className="flex flex-col gap-4 h-full border-t border-b border-l  border-blue-800">
               <CodeEditor language={language} code={code} setCode={setCode} />
             </div>
           </ResizablePanel>
 
-          <ResizableHandle className='bg-gray-900 text-gray-900' withHandle />
+          <ResizableHandle className='bg-blue-800 text-gray-900' withHandle />
 
           {/* Right Column */}
           <ResizablePanel defaultSize={30} minSize={20}>
