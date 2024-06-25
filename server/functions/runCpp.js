@@ -34,7 +34,7 @@ async function runCpp(code, input) {
             { timeout: 10000 }
         ).catch((error) => {
             if (error.killed && error.signal === 'SIGTERM') {
-                throw new Error('Time limit reached');
+                throw new Error('Time limit exceeded');
             }
             throw error;
         });
