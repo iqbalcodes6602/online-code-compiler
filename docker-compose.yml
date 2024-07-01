@@ -3,7 +3,7 @@ version: '3'
 services:
   frontend:
     build: ./client
-    container_name: react-ui
+    container_name: frontend
     ports:
       - "3000:3000"
     stdin_open: true
@@ -17,7 +17,7 @@ services:
 
   backend:
     build: ./server
-    container_name: node-api
+    container_name: backend
     ports:
       - "5000:5000"
     networks:
