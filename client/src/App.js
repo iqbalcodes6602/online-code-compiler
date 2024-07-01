@@ -1,5 +1,5 @@
 // frontend/src/App.js
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './styles/App.css';
 import CodeEditor from './components/CodeEditor';
 import {
@@ -26,7 +26,7 @@ function App() {
     try {
       setOutput('');
       setError('');
-      const response = await fetch(process.env.REACT_APP_BACKEND_URL + language, {
+      const response = await fetch(process.env.REACT_APP_BACKEND_URL + '/runcode/' + language, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
