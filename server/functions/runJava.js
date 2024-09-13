@@ -14,13 +14,16 @@ async function runJava(code, input) {
         await ensureDirectoryExists(codesDirectory);
 
         // Generate unique filenames for code and input files
-        const fileName = `${uuid()}`;
+        const fileName = `JAVA_Code_${uuid().replace(/-/g, '_')}`; // Replace hyphens with underscores
         codePath = path.join(codesDirectory, fileName + '.java');
         inputPath = path.join(codesDirectory, fileName + '.input');
-        className = fileName; // Use the same file name for the class name
+        className = fileName; // Use the modified file name for the class name
 
-        // Write code and input to temporary files
-        await fs.writeFile(codePath, code);
+        // Replace the class name in the code to match the generated valid file name
+        const modifiedCode = code.replace(/public class \w+/g, `public class ${className}`);
+
+        // Write the modified code and input to temporary files
+        await fs.writeFile(codePath, modifiedCode);
         await fs.writeFile(inputPath, input || '');
 
         // Compile the Java code
@@ -75,6 +78,8 @@ async function runJava(code, input) {
         }
     }
 }
+
+
 
 async function ensureDirectoryExists(directoryPath) {
     try {
