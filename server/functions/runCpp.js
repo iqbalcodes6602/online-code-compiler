@@ -1,22 +1,23 @@
-// executeCpp.js
-
 const { v4: uuid } = require('uuid');
 const { exec } = require('child_process');
 const util = require('util');
 const execAsync = util.promisify(exec);
 const fs = require('fs').promises;
-
 const path = require('path');
+
 const codesDirectory = path.join(__dirname, 'codes');
 
 async function runCpp(code, input) {
     let codePath, inputPath, executablePath;
     try {
-        // Generate unique filenames for code and input files
+        // Ensure the 'codes' directory exists
+        await ensureDirectoryExists(codesDirectory);
+
+        // Generate unique filenames for code, input, and executable
         const fileName = `${uuid()}`;
         codePath = path.join(codesDirectory, fileName + '.cpp');
         inputPath = path.join(codesDirectory, fileName + '.input');
-        executablePath = path.join(codesDirectory, fileName + '.exe'); // Add .exe extension for the executable
+        executablePath = path.join(codesDirectory, fileName); // No extension for executable
 
         // Write code and input to temporary files
         await fs.writeFile(codePath, code);
@@ -73,6 +74,14 @@ async function runCpp(code, input) {
     }
 }
 
+async function ensureDirectoryExists(directoryPath) {
+    try {
+        await fs.access(directoryPath);
+    } catch {
+        await fs.mkdir(directoryPath, { recursive: true });
+    }
+}
+
 async function attemptFileDeletion(filePath) {
     try {
         await fs.unlink(filePath);
@@ -82,6 +91,9 @@ async function attemptFileDeletion(filePath) {
             console.warn(`File ${filePath} is busy, retrying deletion after 500ms...`);
             await new Promise((resolve) => setTimeout(resolve, 500)); // Retry after 500ms
             await fs.unlink(filePath); // Attempt deletion again
+        } else if (error.code === 'ENOENT') {
+            // File does not exist, no action needed
+            console.warn(`File ${filePath} does not exist, skipping delete.`);
         } else {
             throw error; // Rethrow other errors
         }

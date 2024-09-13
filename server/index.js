@@ -15,9 +15,19 @@ const codeDir = path.join(__dirname, 'functions/codes'); // Adjust the path as p
 app.use(bodyParser.json());
 app.use(cors());
 
+// Helper function to ensure the 'code' directory exists
+async function ensureCodeDirectory() {
+  try {
+    await fs.access(codeDir);
+  } catch (error) {
+    // Directory does not exist, create it
+    await fs.mkdir(codeDir, { recursive: true });
+  }
+}
 
 // Helper function to clear the 'code' directory
 async function clearCodeDirectory() {
+  await ensureCodeDirectory(); // Ensure the directory exists
   try {
     const files = await fs.readdir(codeDir);
     for (const file of files) {
@@ -59,7 +69,7 @@ app.post('/runcode/python', async (req, res) => {
   }
 });
 
-// Route to run Cpp code
+// Route to run C++ code
 app.post('/runcode/cpp', async (req, res) => {
   try {
     const { code, input } = req.body;
@@ -77,7 +87,7 @@ app.post('/runcode/cpp', async (req, res) => {
 app.post('/runcode/c', async (req, res) => {
   try {
     const { code, input } = req.body;
-    const result = await runCpp(code, input);
+    const result = await runCpp(code, input); // Assuming you meant to run C++ code here
     res.status(200).json(result);
   } catch (error) {
     res.status(500).json({

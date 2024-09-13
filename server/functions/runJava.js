@@ -1,29 +1,37 @@
-// executePy.js
-
 const { v4: uuid } = require('uuid');
 const { exec } = require('child_process');
 const util = require('util');
 const execAsync = util.promisify(exec);
 const fs = require('fs').promises;
-
 const path = require('path');
+
 const codesDirectory = path.join(__dirname, 'codes');
+
 async function runJava(code, input) {
-    let codePath, inputPath;
+    let codePath, inputPath, className;
     try {
+        // Ensure the 'codes' directory exists
+        await ensureDirectoryExists(codesDirectory);
+
         // Generate unique filenames for code and input files
         const fileName = `${uuid()}`;
         codePath = path.join(codesDirectory, fileName + '.java');
         inputPath = path.join(codesDirectory, fileName + '.input');
+        className = fileName; // Use the same file name for the class name
 
         // Write code and input to temporary files
         await fs.writeFile(codePath, code);
         await fs.writeFile(inputPath, input || '');
 
-        // Execute the Python code with input file as input
+        // Compile the Java code
+        await execAsync(`javac ${codePath}`).catch((error) => {
+            throw new Error(`Compilation failed: ${error.stderr || error.message}`);
+        });
+
+        // Execute the Java class with input file as input
         const startTime = new Date().getTime();
         const { error, stdout, stderr } = await execAsync(
-            `java ${codePath} < ${inputPath}`,
+            `java -cp ${codesDirectory} ${className} < ${inputPath}`,
             { timeout: 10000 }
         ).catch((error) => {
             if (error.killed && error.signal === 'SIGTERM') {
@@ -57,9 +65,22 @@ async function runJava(code, input) {
             if (inputPath) {
                 await attemptFileDeletion(inputPath);
             }
+            // Delete .class files
+            if (className) {
+                const classFilePath = path.join(codesDirectory, `${className}.class`);
+                await attemptFileDeletion(classFilePath);
+            }
         } catch (cleanupError) {
             console.error('Error cleaning up temporary files:', cleanupError);
         }
+    }
+}
+
+async function ensureDirectoryExists(directoryPath) {
+    try {
+        await fs.access(directoryPath);
+    } catch {
+        await fs.mkdir(directoryPath, { recursive: true });
     }
 }
 
@@ -72,6 +93,9 @@ async function attemptFileDeletion(filePath) {
             console.warn(`File ${filePath} is busy, retrying deletion after 500ms...`);
             await new Promise((resolve) => setTimeout(resolve, 500)); // Retry after 500ms
             await fs.unlink(filePath); // Attempt deletion again
+        } else if (error.code === 'ENOENT') {
+            // File does not exist, no action needed
+            console.warn(`File ${filePath} does not exist, skipping delete.`);
         } else {
             throw error; // Rethrow other errors
         }
