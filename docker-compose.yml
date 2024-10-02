@@ -4,13 +4,13 @@ services:
   nginx:
     build:
       context: ./proxy
-      dockerfile: Dockerfile  # Custom Nginx Dockerfile
+      dockerfile: Dockerfile
     container_name: proxy
     image: iqbalcodes6602/occ-nginx:latest
     ports:
-      - "80:80"     # Expose Nginx on port 80 to the public
+      - "80:80"
     depends_on:
-      - frontend    # Ensure frontend and backend are running before Nginx starts
+      - frontend
       - backend
     networks:
       - app-network
@@ -18,11 +18,11 @@ services:
   backend:
     build:
       context: ./server
-      dockerfile: Dockerfile  # Backend Dockerfile
+      dockerfile: Dockerfile
     container_name: backend
     image: iqbalcodes6602/occ-backend:latest
     expose:
-      - "3001"   # Only expose this port internally to Nginx (no external access)
+      - "3001"
     environment:
       - NODE_ENV=production
     networks:
@@ -31,11 +31,11 @@ services:
   frontend:
     build:
       context: ./client
-      dockerfile: Dockerfile  # Frontend Dockerfile
+      dockerfile: Dockerfile
     container_name: frontend
     image: iqbalcodes6602/occ-frontend:latest
     expose:
-      - "80"    # Only expose internally (no external access)s
+      - "80"
     depends_on:
       - backend
     networks:
