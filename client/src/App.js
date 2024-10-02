@@ -21,12 +21,14 @@ function App() {
   const [language, setLanguage] = useState('python');
   const [loading, setLoading] = useState(false);
 
+  const backendUrl = '/api';
+  
   const handleSubmit = async () => {
     setLoading(true);
     try {
       setOutput('');
       setError('');
-      const response = await fetch(process.env.REACT_APP_BACKEND_URL + '/runcode/' + language, {
+      const response = await fetch(backendUrl + '/runcode/' + language, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

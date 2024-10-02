@@ -9,7 +9,7 @@ const runCpp = require('./functions/runCpp');
 const runJava = require('./functions/runJava');
 
 const app = express();
-const port = process.env.PORT || 5000;
+const port = 3001;
 const codeDir = path.join(__dirname, 'functions/codes'); // Adjust the path as per your directory structure
 
 app.use(bodyParser.json());
@@ -39,7 +39,7 @@ async function clearCodeDirectory() {
 }
 
 // Route to delete all files in the 'code' directory
-app.get('/clearcodes', async (req, res) => {
+app.get('/api/clearcodes', async (req, res) => {
   try {
     await clearCodeDirectory();
     res.status(200).json({
@@ -56,7 +56,7 @@ app.get('/clearcodes', async (req, res) => {
 });
 
 // Route to run Python code
-app.post('/runcode/python', async (req, res) => {
+app.post('/api/runcode/python', async (req, res) => {
   try {
     const { code, input } = req.body;
     const result = await runPython(code, input);
@@ -70,7 +70,7 @@ app.post('/runcode/python', async (req, res) => {
 });
 
 // Route to run C++ code
-app.post('/runcode/cpp', async (req, res) => {
+app.post('/api/runcode/cpp', async (req, res) => {
   try {
     const { code, input } = req.body;
     const result = await runCpp(code, input);
@@ -84,7 +84,7 @@ app.post('/runcode/cpp', async (req, res) => {
 });
 
 // Route to run C code
-app.post('/runcode/c', async (req, res) => {
+app.post('/api/runcode/c', async (req, res) => {
   try {
     const { code, input } = req.body;
     const result = await runCpp(code, input); // Assuming you meant to run C++ code here
@@ -98,7 +98,7 @@ app.post('/runcode/c', async (req, res) => {
 });
 
 // Route to run Java code
-app.post('/runcode/java', async (req, res) => {
+app.post('/api/runcode/java', async (req, res) => {
   try {
     const { code, input } = req.body;
     const result = await runJava(code, input);
@@ -112,7 +112,7 @@ app.post('/runcode/java', async (req, res) => {
 });
 
 // Route to run JavaScript code (if needed)
-app.post('/runcode/javascript', async (req, res) => {
+app.post('/api/runcode/javascript', async (req, res) => {
   try {
     const { code, input } = req.body;
     // Adjust this line to run JavaScript code if implemented
