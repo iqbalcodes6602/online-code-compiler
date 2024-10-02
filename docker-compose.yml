@@ -1,26 +1,46 @@
-version: '3'
+name: react-express
+
 services:
-  frontend:
-    build: ./client
-    container_name: frontend
+  nginx:
+    build:
+      context: ./proxy
+      dockerfile: Dockerfile
+    container_name: proxy
+    image: iqbalcodes6602/occ-nginx:latest
     ports:
-      - "3000:3000"
-    stdin_open: true
-    tty: true
+      - "80:80"
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - app-network
+
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: backend
+    image: iqbalcodes6602/occ-backend:latest
+    expose:
+      - "3001"
+    environment:
+      - NODE_ENV=production
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: frontend
+    image: iqbalcodes6602/occ-frontend:latest
+    expose:
+      - "80"
     depends_on:
       - backend
     networks:
-      - app-net
-    environment:
-      - REACT_APP_BACKEND_URL=http://localhost:5000/runcode/
-  backend:
-    build: ./server
-    container_name: backend
-    ports:
-      - "5000:5000"
-    networks:
-      - app-net
-  
+      - app-network
+
 networks:
-  app-net:
+  app-network:
     driver: bridge
